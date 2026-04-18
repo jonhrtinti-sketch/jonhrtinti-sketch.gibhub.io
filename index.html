@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello, World!</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+      <h1 class="title">Hello World!</h1>
+      <p id="currentTime"></p>
+      <script src="script.js"></script>
+  </body>
+</html><!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Para mi amor</title>
+    <style>
+        body { background-color: #94E0D6; color: #004d00; font-family: sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .sidebar { position: fixed; left: 20px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 15px; }
+        .btn-side { border: none; padding: 15px 25px; border-radius: 50px; color: white; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .te-extrano { background-color: #EB8FA4; }
+        .motivate { background-color: #833EAD; }
+        .main-content { max-width: 700px; text-align: center; padding: 40px 20px; }
+        .caja-vida-container { background: rgba(255, 255, 255, 0.4); padding: 25px; border-radius: 20px; border: 2px solid #004d00; }
+        textarea { width: 100%; height: 120px; border-radius: 10px; padding: 10px; margin-bottom: 15px; resize: none; border: 1px solid #004d00; }
+        .btn-interact { background-color: #004d00; color: white; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; margin: 10px; }
+        .historial-box { margin-top: 30px; background: white; color: #333; padding: 15px; border-radius: 10px; text-align: left; max-height: 300px; overflow-y: auto; width: 100%; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+        .corazon-anim { font-size: 60px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); animation: pulse 1s ease-out forwards; pointer-events: none; }
+        @keyframes pulse { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(4); opacity: 0; } }
+        .footer { font-style: italic; margin-top: auto; padding: 40px; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <button class="btn-side te-extrano" onclick="clickTeExtrano()">Te extraño</button>
+        <button class="btn-side motivate" onclick="clickMotivate()">Motívate</button>
+    </div>
+
+    <div class="main-content">
+        <h1>Hola mi amor espero te guste esta pagina tanto como me gustas tu</h1>
+        <div class="caja-vida-container">
+            <p>Si quieres hablarme sin usar redes sociales, usa esto:</p>
+            <textarea id="inputMensaje" placeholder="Escribe algo aquí..."></textarea>
+            <br>
+            <button class="btn-interact" onclick="enviarYCargar()">Caja de vida &lt;3</button>
+            <div style="margin-top: 20px;">
+                <button class="btn-interact" onclick="registrarBoton('¿Quieres obtener un video?')">¿Quieres obtener un video?</button>
+                <button class="btn-interact" onclick="registrarBoton('¿Quieres hablar?')">¿Quieres hablar?</button>
+            </div>
+        </div>
+        <h3>Nuestro Historial</h3>
+        <div id="historial" class="historial-box"></div>
+    </div>
+
+    <div class="footer">
+        Yo sé que esto llevará tiempo pero el hecho de que estemos por el momento separados no significa que estaremos desanclados, aquí estaré toda mi vida para ti.
+    </div>
+    <div id="efecto"></div>
+
+    <script>
+        window.onload = mostrarHistorial;
+
+        // ESTA ES LA FUNCIÓN QUE ENVÍA LA NOTIFICACIÓN
+        function enviarNotificacion(mensaje) {
+            console.log("Enviando notificación a jonhrtinti@gmail.com...");
+            // Nota: Para que el correo llegue de verdad, deberás usar un servicio como Formspree.io
+            // Por ahora, simulamos el envío en la consola.
+        }
+
+        function enviarYCargar() {
+            const msj = document.getElementById('inputMensaje').value;
+            if(!msj) return;
+            
+            const log = { fecha: new Date().toLocaleString(), tipo: "Mensaje de Ella", contenido: msj };
+            salvarLog(log);
+            enviarNotificacion("Nuevo mensaje en Caja de Vida: " + msj);
+            document.getElementById('inputMensaje').value = "";
+            alert("Mensaje guardado y notificación enviada a Jonatan.");
+        }
+
+        function clickTeExtrano() {
+            crearCorazon();
+            let conteo = parseInt(localStorage.getItem('clicsExtrano') || 0) + 1;
+            localStorage.setItem('clicsExtrano', conteo);
+            const log = { fecha: new Date().toLocaleString(), tipo: "💖 Te extraño", contenido: `Click #${conteo}` };
+            salvarLog(log);
+            if(conteo % 5 === 0) enviarNotificacion("Effy te ha extrañado mucho hoy, ya lleva " + conteo + " clics.");
+        }
+
+        function clickMotivate() {
+            alert("Vamoooos amor tu puedes");
+            salvarLog({ fecha: new Date().toLocaleString(), tipo: "🚀 Motivación", contenido: "Necesitaba ánimos." });
+        }
+
+        function registrarBoton(nombre) {
+            let conteo = parseInt(localStorage.getItem(nombre) || 0) + 1;
+            localStorage.setItem(nombre, conteo);
+            alert(nombre === '¿Quieres obtener un video?' ? "Formato de video solicitado." : "Interés en hablar registrado.");
+            salvarLog({ fecha: new Date().toLocaleString(), tipo: "🔘 Botón: " + nombre, contenido: `Clic #${conteo}` });
+            enviarNotificacion("Effy seleccionó: " + nombre);
+        }
+
+        function salvarLog(log) {
+            let historial = JSON.parse(localStorage.getItem('miHistorial') || "[]");
+            historial.unshift(log);
+            localStorage.setItem('miHistorial', JSON.stringify(historial));
+            mostrarHistorial();
+        }
+
+        function mostrarHistorial() {
+            const box = document.getElementById('historial');
+            let historial = JSON.parse(localStorage.getItem('miHistorial') || "[]");
+            box.innerHTML = historial.map(item => `<div style="border-bottom: 1px solid #ddd; padding: 5px 0;"><small>${item.fecha}</small><br><strong>${item.tipo}:</strong> ${item.contenido}</div>`).join('');
+        }
+
+        function crearCorazon() {
+            const div = document.getElementById('efecto');
+            div.innerHTML = '<div class="corazon-anim">❤️</div>';
+            setTimeout(() => div.innerHTML = "", 1000);
+        }
+    </script>
+</body>
+</html>
